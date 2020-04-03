@@ -43,12 +43,12 @@ class MainScreen extends Component {
   componentDidMount() {    
     let serverAddr = null;
 
-    if('development' === process.env.NODE_ENV) {
-      const host = window.document.location.host.replace(/:.*/, '');
-      serverAddr = location.protocol.replace("http", "ws") + "//" + host + (location.port ? ':'+2567 : '');
-    } else {
+    // if('development' === process.env.NODE_ENV) {
+    //   const host = window.document.location.host.replace(/:.*/, '');
+    //   serverAddr = location.protocol.replace("http", "ws") + "//" + host + (location.port ? ':'+2567 : '');
+    // } else {
       serverAddr = 'ws://mighty-sands-84244.herokuapp.com';
-    }
+    // }
     
     this.client = new Colyseus.Client(serverAddr);
 
