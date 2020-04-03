@@ -1,0 +1,37 @@
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 140px;
+}
+
+.App-header {
+  background-image: linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(255,255,255,1) 85%),
+      url(https://source.unsplash.com/1200x800/?salad+bowl);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 800px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.App-content {
+  margin-top: -610px;
+  background: linear-gradient(to bottom, white, white 85%, rgba(255,255,255,0));
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.15);
+  padding: 24px;
+  min-height: 500px;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

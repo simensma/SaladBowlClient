@@ -1,0 +1,26 @@
+{
+  "name": "salad-bowl",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@types/jest": "25.1.4",
+    "@types/node": "13.9.5",
+    "@types/react": "16.9.27",
+    "@types/react-dom": "16.9.5",
+    "colyseus.js": "^0.12.2",
+    "materialize-css": "^1.0.0-rc.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-materialize": "^3.8.0",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "0.9.5",
+    "typescript": "3.8.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
