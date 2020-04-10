@@ -2,13 +2,19 @@ import React, { Component } from 'react';
 import { Row, Icon, Col } from 'react-materialize';
 
 class PlayerList extends Component {
-    render() { 
+    render() {
+        let ts = this.props.teams.reduce((res, t) => {
+            res[t.name] = t;
+
+            return res;
+        }, {});
+
         let teams = Object.values(this.props.players.reduce((res, p) => {
-            if(!(p.team.name in res)) {
-                res[p.team.name] = {team: p.team, players: []};
+            if(!(p.team in res)) {
+                res[p.team] = {team: ts[p.team], players: []};
             }
 
-            res[p.team.name].players.push(p);
+            res[p.team].players.push(p);
 
             return res;
         }, {}));

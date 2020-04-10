@@ -8,6 +8,7 @@
     "@types/react": "16.9.27",
     "@types/react-dom": "16.9.5",
     "colyseus.js": "^0.12.2",
+    "heroku-ssl-redirect": "0.0.4",
     "materialize-css": "^1.0.0-rc.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

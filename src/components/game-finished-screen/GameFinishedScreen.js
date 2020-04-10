@@ -5,7 +5,10 @@ class GameFinishedScreen extends Component {
         return (
             <div>
                 <h1>Game FInished!!</h1>
-                <button>Play Again!</button>
+
+                {this.props.teams.map(team => {
+                    return (<div>{team.name}: {team.score} points</div>);
+                })}
             </div>
         );
     }
