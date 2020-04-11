@@ -121,7 +121,7 @@ class MainScreen extends Component {
         return res;
       }, {});
 
-      console.log(updatedState)
+      // console.log(updatedState)
 
       this.setState(updatedState);
 
