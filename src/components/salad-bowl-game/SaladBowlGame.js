@@ -42,7 +42,7 @@ class SaladBowlGame extends Component {
       return (
         <form>
           <h5>{currentRound.type} Round starts in</h5>
-          <h2>{currentRound.countdownTime}s {currentRound.state == 'countdown' && (
+          <h2>{this.props.countdown}s {currentRound.state == 'countdown' && (
               <Button small waves="light" onClick={this.pause}><Icon>pause</Icon></Button>)}
               {currentRound.state == 'paused' && (
               <Button small waves="light" onClick={this.resume}><Icon>play_arrow</Icon></Button>)}
@@ -71,7 +71,7 @@ class SaladBowlGame extends Component {
           {currentTurn.state !== 'created' && (
             <Row>
               <h5>{yourTurn? 'YOUR': currentTurn.player.name + '\'s'} Turn ends in</h5>
-              <h2>{currentTurn.countdownTime}s</h2>
+              <h2>{this.props.countdown}s</h2>
               <div>{nm && (<span>Next: {nm.name}</span>)}</div>
             </Row>
           )}

@@ -34,6 +34,13 @@ class PlayerList extends Component {
         this.props.room.send({type: 'movePlayer', data});
     }
 
+    removePlayer(e, player) {
+        e.preventDefault();
+        this.props.room.send({type: 'removePlayer', data: {
+            sessionId: player.sessionId
+        }});
+    }
+
     teamList() {
         let ts = this.props.teams.reduce((res, t) => {
             res[t.name] = t;
@@ -108,9 +115,12 @@ class PlayerList extends Component {
                                                                 </span>
                                                             )}
 
-                                                            <Icon tiny right>
-                                                                {p.connectionStatus === 'CONNECTED'? 'wifi': 'wifi_off'}
-                                                            </Icon>
+                                                            {p.connectionStatus !== 'CONNECTED' && (<span onClick={e => this.removePlayer(e, p)} title="Remove" style={{color: 'red'}}><Icon tiny right>
+                                                                clear
+                                                            </Icon></span>)}
+                                                            {p.connectionStatus !== 'CONNECTED' && (<Icon style={{color: 'red'}} tiny right>
+                                                                wifi_off
+                                                            </Icon>)}
                                                             {p.name}
 
                                                             <div className="divider"></div>
