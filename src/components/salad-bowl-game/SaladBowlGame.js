@@ -91,8 +91,8 @@ class SaladBowlGame extends Component {
 
                 <h1>{currentTurn.currentWord}</h1>
 
-                {currentTurn.state !== 'created' && (<span><Button className="red" large waves="light" onClick={this.skipAnswer}>SKIP Word</Button>&nbsp;
-                <Button large waves="light" onClick={this.approveAnswer}>Approve Guess</Button></span>)}
+                {currentTurn.state !== 'created' && (<span><Button style={{marginBottom: '8px'}} className="red" large waves="light" onClick={this.skipAnswer}>SKIP Word</Button>&nbsp;
+                <Button style={{marginBottom: '8px'}} large waves="light" onClick={this.approveAnswer}>Approve Guess</Button></span>)}
               </Col>
             </Row>
           }
