@@ -76,13 +76,6 @@ class SaladBowlGame extends Component {
             </Row>
           )}
 
-          {currentTurn.state === 'created' && yourTurn && (
-            <Row>
-              <p>It's your turn! Hit "Start Turn" when you're ready.</p>
-              <Button large onClick={this.startTurn}>Start Turn</Button>
-            </Row>
-          )}
-
           {currentTurn.state === 'created' && !yourTurn && (
             <Row>
               <h5>Waiting for {currentTurn.player.name}</h5>
@@ -93,13 +86,23 @@ class SaladBowlGame extends Component {
             <Row>
               <Col s={12}>
                 <div className="divider"></div>
+                
+                {currentTurn.state === 'created' && (<p style={{fontSize: '24px'}}>It's your turn! Your first word is:</p>)}
+
                 <h1>{currentTurn.currentWord}</h1>
 
-                <Button className="red" large waves="light" onClick={this.skipAnswer}>SKIP Word</Button>&nbsp;
-                <Button large waves="light" onClick={this.approveAnswer}>Approve Guess</Button>
+                {currentTurn.state !== 'created' && (<span><Button className="red" large waves="light" onClick={this.skipAnswer}>SKIP Word</Button>&nbsp;
+                <Button large waves="light" onClick={this.approveAnswer}>Approve Guess</Button></span>)}
               </Col>
             </Row>
           }
+
+          {currentTurn.state === 'created' && yourTurn && (
+            <Row>
+              <p style={{fontSize: '24px'}}>Hit "Start Turn" when you're ready.</p>
+              <Button large onClick={this.startTurn}>Start Turn</Button>
+            </Row>
+          )}
         </form>
       );
     } else {
