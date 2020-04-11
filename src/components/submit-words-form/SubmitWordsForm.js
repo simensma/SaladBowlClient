@@ -5,7 +5,8 @@ class SubmitWordsForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            words: new Array(props.numWords).fill('')
+            words: new Array(props.numWords).fill(''),
+            loading: false
         };
 
         this.submitWords = this.submitWords.bind(this);
@@ -23,7 +24,7 @@ class SubmitWordsForm extends Component {
 
     submitWords(e) {
         e.preventDefault();
-
+        
         this.props.onSubmit(this.state);
     }
 
@@ -68,7 +69,7 @@ class SubmitWordsForm extends Component {
                         })}
 
                         <Row>
-                            <input className="btn-large waves-effect waves-light" type="submit" value="Submit"></input>
+                            <input disabled={this.state.loading} className="btn-large waves-effect waves-light" type="submit" value="Submit"></input>
                         </Row>
                     </form>
                 </Row>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Select, TextInput } from 'react-materialize';
+import { Select, TextInput, Button } from 'react-materialize';
 
 class NewGameForm extends Component {
     constructor(props) {
@@ -11,7 +11,9 @@ class NewGameForm extends Component {
                 {type: 'Taboo', duration: 60},
                 {type: 'Charades', duration: 45},
                 {type: 'One Word', duration: 30}
-            ]
+            ],
+            saving: false,
+            loading: false
         }
 
         this.addRound = this.addRound.bind(this);
@@ -128,9 +130,9 @@ class NewGameForm extends Component {
                         <div className="col s12 divider"></div>
                     </div>
                     <div className="row">
-                        <button className="btn-large waves-effect waves-light" type="submit">Start Game
+                        <Button disabled={this.state.loading} className="btn-large waves-effect waves-light" type="submit">Start Game
                             <i className="material-icons right">send</i>
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

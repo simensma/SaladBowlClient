@@ -132,23 +132,23 @@ class MainScreen extends Component {
   }
 
   initializeRoom(room) {
-    this.room.send({type: 'init', data: room});
+    return this.room.send({type: 'init', data: room});
   }
 
   submitWords(words) {
-    this.room.send({type: 'submitWords', data: words});
+    return this.room.send({type: 'submitWords', data: words});
   }
   
   startGame(words) {
-    this.room.send({type: 'startGame', data: words});
+    return this.room.send({type: 'startGame', data: words});
   }
 
   resume() {
-    this.room.send({type: 'resume'});
+    return this.room.send({type: 'resume'});
   }
 
   pause() {
-    this.room.send({type: 'resume'});
+    return this.room.send({type: 'resume'});
   }
 
   generatePlayerList(playersObj) {

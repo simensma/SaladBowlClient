@@ -8,7 +8,7 @@ class RegisterForm extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.joinOrCreateRoom = this.joinOrCreateRoom.bind(this);
     this.askForName = this.askForName.bind(this);
-    this.state = {name: null, room: props.gameId || null, newGame: false, selectingName: !!props.gameId};
+    this.state = {name: null, room: props.gameId || null, newGame: false, selectingName: !!props.gameId, loading: false};
   }
 
   handleInputChange(e) {
@@ -22,6 +22,7 @@ class RegisterForm extends Component {
     e.preventDefault();
 
     this.props.onSubmit(this.state.name, this.state.room);
+    this.setState({loading: true});
   }
 
   askForName(e) {
@@ -42,7 +43,7 @@ class RegisterForm extends Component {
             </form>
           </Row>
           <Row>
-            <Button className="btn waves-effect waves-light" id="join_game_btn" onClick={this.joinOrCreateRoom} name="join_game">
+            <Button disabled={this.state.loading} className="btn waves-effect waves-light" id="join_game_btn" onClick={this.joinOrCreateRoom} name="join_game">
                   {this.state.newGame? 'Create Game': 'Join Game'}
                   <i className="material-icons right">send</i>
             </Button>
