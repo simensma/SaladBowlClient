@@ -1,8 +1,40 @@
 import React, { Component } from 'react';
 import { Row, Icon, Col } from 'react-materialize';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 class PlayerList extends Component {
-    render() {
+
+    constructor(props) {
+        super(props);
+        this.onDragEnd = this.onDragEnd.bind(this);
+        this.teamList = this.teamList.bind(this);
+    }
+
+    onDragEnd = ({destination, source, draggableId}) => {
+        if(!destination) {
+            return;
+        }
+
+        if(destination.droppableId === source.droppableId && destination.index === source.index) {
+            return;
+        }
+
+        let teams = this.teamList();
+
+        let targetTeam = teams.find(t => t.team.id === parseInt(destination.droppableId));
+
+        let targetOrder = targetTeam.players[destination.index].order;
+       
+        const data =  {
+            playerId: parseInt(draggableId),
+            order: targetOrder,
+            teamId: targetTeam.team.id,
+        };
+
+        this.props.room.send({type: 'movePlayer', data});
+    }
+
+    teamList() {
         let ts = this.props.teams.reduce((res, t) => {
             res[t.name] = t;
 
@@ -19,6 +51,14 @@ class PlayerList extends Component {
             return res;
         }, {}));
 
+        teams.forEach(t => t.players = t.players.sort((p1, p2) => p1.order - p2.order));
+
+        return teams;
+    }
+
+    render() {
+        const teams = this.teamList();
+        
         return (
             <Row style={{textAlign: 'left'}}>
                 <Col s={12}>
@@ -39,39 +79,59 @@ class PlayerList extends Component {
                         <div className="divider"></div>
                     </Row>
                     
+                    <DragDropContext onDragEnd={this.onDragEnd}>
                     {teams.map(t => {
                         return (
-                            <Row key={t.team.name}>
-                                <Col s={12}>
-                                    <b>{t.team.name}</b> - {t.team.score}
-                                </Col>
-                                <Col s={12}>
-                                {t.players.map((p,idx) => {
-                                    return (
-                                        <Row key={p.name + idx}>
-                                            <Col s={12}>
-                                                {this.props.currentState === 'initialized' && p.ready && (
-                                                    <span style={{marginRight: '8px', color: 'green'}}>
-                                                        <Icon tiny>
-                                                            done
-                                                        </Icon>
-                                                    </span>
+                            <Droppable droppableId={t.team.id + ""} key={t.team.id}>
+                            {(provided) => (
+                                <div {...provided.droppableProps} ref={provided.innerRef} key={t.team.id}>
+                                <Row>
+                                    <Col s={12}>
+                                        <b>{t.team.name}</b> - {t.team.score}
+                                    </Col>
+                                    <Col s={12}>
+                                    {t.players.map((p,idx) => {
+                                        return (
+                                            <Draggable draggableId={p.id + ""} index={idx} key={p.id}>
+                                                {provided => (
+                                                <div 
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    ref={provided.innerRef}>
+                                                    <Row>
+                                                        <Col s={12}>
+                                                            {this.props.currentState === 'initialized' && p.ready && (
+                                                                <span style={{marginRight: '8px', color: 'green'}}>
+                                                                    <Icon tiny>
+                                                                        done
+                                                                    </Icon>
+                                                                </span>
+                                                            )}
+
+                                                            <Icon tiny right>
+                                                                {p.connectionStatus === 'CONNECTED'? 'wifi': 'wifi_off'}
+                                                            </Icon>
+                                                            {p.name}
+
+                                                            <div className="divider"></div>
+                                                        </Col>
+
+                                                    </Row>
+                                                </div>
+
                                                 )}
-
-                                                <Icon tiny right>
-                                                    {p.connectionStatus === 'CONNECTED'? 'wifi': 'wifi_off'}
-                                                </Icon>
-                                                {p.name}
-
-                                                <div className="divider"></div>
-                                            </Col>
-                                        </Row>
-                                    )
-                                })}
-                                </Col>
-                            </Row>
+                                            </Draggable>
+                                        )
+                                    })}
+                                    </Col>
+                                    {provided.placeholder}
+                                </Row>
+                                </div>
+                            )}
+                            </Droppable>
                         );
                     })}
+                    </DragDropContext>
                 </Col>
             </Row>
         );

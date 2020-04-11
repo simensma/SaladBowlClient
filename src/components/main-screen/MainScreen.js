@@ -43,12 +43,12 @@ class MainScreen extends Component {
   componentDidMount() {    
     let serverAddr = null;
 
-    if('development' === process.env.NODE_ENV) {
-      const host = window.document.location.host.replace(/:.*/, '');
-      serverAddr = location.protocol.replace("http", "ws") + "//" + host + (location.port ? ':'+5000 : '');
-    } else {
+    // if('development' === process.env.NODE_ENV) {
+    //   const host = window.document.location.host.replace(/:.*/, '');
+    //   serverAddr = location.protocol.replace("http", "ws") + "//" + host + (location.port ? ':'+5000 : '');
+    // } else {
       serverAddr = 'wss://mighty-sands-84244.herokuapp.com';
-    }
+    // }
     
     this.client = new Colyseus.Client(serverAddr);
 
@@ -179,12 +179,12 @@ class MainScreen extends Component {
             <div className={this.state.state === 'created'? 'col s12': 'col s12 m8'}>
               {this.state.state === 'created' && <NewGameForm onSubmit={this.initializeRoom}></NewGameForm>}
               {this.state.state === 'initialized' && <SubmitWordsForm players={this.state.playerList} numWords={this.state.numWords} player={this.state.players[this.state.sessionId]} onSubmit={this.submitWords} onStartSubmit={this.startGame}></SubmitWordsForm>}
-              {this.state.state === 'playing' && <SaladBowlGame room={this.room} yourId={this.room.sessionId} round={this.state.rounds[this.state.currentRound]}></SaladBowlGame>}
+              {this.state.state === 'playing' && <SaladBowlGame room={this.room} yourId={this.room.sessionId} round={this.state.rounds[this.state.currentRound]} upcomingPlayer={this.state.upcomingPlayer} players={this.state.players}></SaladBowlGame>}
               {this.state.state === 'finished' && <GameFinishedScreen teams={this.state.teams} room={this.room} yourId={this.room.sessionId} round={this.state.rounds[this.state.currentRound]}></GameFinishedScreen>}
             </div>
             {!isCreatedState &&
             <div className="col s12 m4" style={{borderLeft: '1px solid #efefef', height: '100%', boxShadow: '-2px 0px 12px -7px rgba(0,0,0,0.51)'}}>
-              <PlayerList teams={this.state.teams} currentState={this.state.state} roomUrl={this.state.roomUrl} roomId={this.room.id} players={this.state.playerList} round={this.state.rounds[this.state.currentRound]}></PlayerList>
+              <PlayerList  room={this.room} teams={this.state.teams} currentState={this.state.state} roomUrl={this.state.roomUrl} roomId={this.room.id} players={this.state.playerList} round={this.state.rounds[this.state.currentRound]}></PlayerList>
             </div>
             }
           </div>}

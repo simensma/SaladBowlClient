@@ -8,6 +8,7 @@ class SaladBowlGame extends Component {
     this.skipAnswer = this.skipAnswer.bind(this);
     this.pause = this.pause.bind(this);
     this.resume = this.resume.bind(this);
+    this.startTurn = this.startTurn.bind(this);
   }
   
   approveAnswer(e) {
@@ -18,6 +19,11 @@ class SaladBowlGame extends Component {
   skipAnswer(e) {
     e.preventDefault();
     this.props.room.send({type: 'skipAnswer'});
+  }
+
+  startTurn(e) {
+    e.preventDefault();
+    this.props.room.send({type: 'startTurn'});
   }
 
   pause(e) {
@@ -46,6 +52,7 @@ class SaladBowlGame extends Component {
     } else if(currentRound.state === 'playing') {
       let currentTurn = currentRound.turns[currentRound.currentTurn] || {};
       let yourTurn = this.props.yourId === currentTurn.player.sessionId;
+      let nm = this.props.players && this.props.players[this.props.upcomingPlayer];
 
       return (
         <form style={{position: 'relative'}}>
@@ -56,14 +63,31 @@ class SaladBowlGame extends Component {
             {currentTurn.state == 'paused' && (
             <Button small waves="light" onClick={this.resume}><Icon>play_arrow</Icon></Button>)}
           </span>
-
+  
           <Row>
             <h1 style={{marginBottom: 0, marginTop: 0}}>{currentRound.type}</h1>
           </Row>
-          <Row>
-            <h5>{yourTurn? 'YOUR': currentTurn.player.name + '\'s'} Turn ends in</h5>
-            <h2>{currentTurn.countdownTime}s</h2>
-          </Row>
+
+          {currentTurn.state !== 'created' && (
+            <Row>
+              <h5>{yourTurn? 'YOUR': currentTurn.player.name + '\'s'} Turn ends in</h5>
+              <h2>{currentTurn.countdownTime}s</h2>
+              <div>{nm && (<span>Next: {nm.name}</span>)}</div>
+            </Row>
+          )}
+
+          {currentTurn.state === 'created' && yourTurn && (
+            <Row>
+              <p>It's your turn! Hit "Start Turn" when you're ready.</p>
+              <Button large onClick={this.startTurn}>Start Turn</Button>
+            </Row>
+          )}
+
+          {currentTurn.state === 'created' && !yourTurn && (
+            <Row>
+              <h5>Waiting for {currentTurn.player.name}</h5>
+            </Row>
+          )}
 
           {currentTurn.currentWord &&
             <Row>
