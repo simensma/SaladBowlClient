@@ -184,7 +184,7 @@ class MainScreen extends Component {
             </div>
             {!isCreatedState &&
             <div className="col s12 m4" style={{borderLeft: '1px solid #efefef', height: '100%', boxShadow: '-2px 0px 12px -7px rgba(0,0,0,0.51)'}}>
-              <PlayerList  room={this.room} teams={this.state.teams} currentState={this.state.state} roomUrl={this.state.roomUrl} roomId={this.room.id} players={this.state.playerList} round={this.state.rounds[this.state.currentRound]}></PlayerList>
+              <PlayerList history={this.props.history} room={this.room} yourId={this.room.sessionId} teams={this.state.teams} currentState={this.state.state} roomUrl={this.state.roomUrl} roomId={this.room.id} players={this.state.playerList} round={this.state.rounds[this.state.currentRound]}></PlayerList>
             </div>
             }
           </div>}

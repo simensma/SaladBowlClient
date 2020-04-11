@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Icon, Col } from 'react-materialize';
+import { Row, Icon, Col, Button } from 'react-materialize';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 class PlayerList extends Component {
@@ -8,6 +8,8 @@ class PlayerList extends Component {
         super(props);
         this.onDragEnd = this.onDragEnd.bind(this);
         this.teamList = this.teamList.bind(this);
+        this.leaveRoom = this.leaveRoom.bind(this);
+        this.removePlayer = this.removePlayer.bind(this);
     }
 
     onDragEnd = ({destination, source, draggableId}) => {
@@ -34,11 +36,21 @@ class PlayerList extends Component {
         this.props.room.send({type: 'movePlayer', data});
     }
 
-    removePlayer(e, player) {
-        e.preventDefault();
-        this.props.room.send({type: 'removePlayer', data: {
-            sessionId: player.sessionId
-        }});
+    removePlayer(e, player, isSelf=false) {
+        if(isSelf || window.confirm('Are you sure you want to remove ' + player.name + ' from the game?')) {
+            console.log('Removing', player);
+            e.preventDefault();
+            this.props.room.send({type: 'removePlayer', data: {
+                playerId: player.id
+            }});
+        }
+    }
+
+    leaveRoom(e) {
+        if(window.confirm('Sure you want to leave the room?')) {
+            this.removePlayer(e, this.props.players.find(p => p.sessionId === this.props.yourId), true);
+            this.props.history.push('/');
+        }
     }
 
     teamList() {
@@ -73,6 +85,7 @@ class PlayerList extends Component {
                         <Col s={12}>
                             <p>
                                 <b>Invite Players</b>
+                                <a style={{float: 'right'}} href="#" onClick={this.leaveRoom}>Leave</a>
                             </p>
                             <p>
                                 {this.props.roomUrl}

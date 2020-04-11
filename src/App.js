@@ -14,7 +14,7 @@ class App extends Component {
     return (
       <Router>
         <Switch>
-          <Route path="/game/:gameId" component={props=><MainScreen gameId={props.match.params.gameId}></MainScreen>}>
+          <Route path="/game/:gameId" component={props=><MainScreen history={props.history} gameId={props.match.params.gameId}></MainScreen>}>
           </Route>
           <Route path="/" component={({history}) => <MainScreen history={history}></MainScreen>}>
           </Route>
