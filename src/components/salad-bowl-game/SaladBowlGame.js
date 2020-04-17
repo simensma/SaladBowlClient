@@ -51,8 +51,9 @@ class SaladBowlGame extends Component {
       );
     } else if(currentRound.state === 'playing') {
       let currentTurn = currentRound.turns[currentRound.currentTurn] || {};
-      let yourTurn = this.props.yourId === currentTurn.player.sessionId;
+      let yourTurn = this.props.yourId === currentTurn.player;
       let nm = this.props.players && this.props.players[this.props.upcomingPlayer];
+      let currentPlayer = this.props.players[currentTurn.player];
 
       return (
         <form style={{position: 'relative'}}>
@@ -70,7 +71,7 @@ class SaladBowlGame extends Component {
 
           {currentTurn.state !== 'created' && (
             <Row>
-              <h5>{yourTurn? 'YOUR': currentTurn.player.name + '\'s'} Turn ends in</h5>
+              <h5>{yourTurn? 'YOUR': currentPlayer.name + '\'s'} Turn ends in</h5>
               <h2>{this.props.countdown}s</h2>
               <div>{nm && (<span>Next: {nm.name}</span>)}</div>
             </Row>
@@ -78,7 +79,7 @@ class SaladBowlGame extends Component {
 
           {currentTurn.state === 'created' && !yourTurn && (
             <Row>
-              <h5>Waiting for {currentTurn.player.name}</h5>
+              <h5>Waiting for {currentPlayer.name}</h5>
             </Row>
           )}
 

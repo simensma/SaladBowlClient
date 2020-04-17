@@ -23,12 +23,12 @@ class PlayerList extends Component {
 
         let teams = this.teamList();
 
-        let targetTeam = teams.find(t => t.team.id === parseInt(destination.droppableId));
+        let targetTeam = teams.find(t => t.team.id === parseInt(destination.droppableId, 10));
 
         let targetOrder = targetTeam.players[destination.index].order;
        
         const data =  {
-            playerId: parseInt(draggableId),
+            playerId: parseInt(draggableId, 10),
             order: targetOrder,
             teamId: targetTeam.team.id,
         };
@@ -48,7 +48,8 @@ class PlayerList extends Component {
 
     leaveRoom(e) {
         if(window.confirm('Sure you want to leave the room?')) {
-            this.removePlayer(e, this.props.players.find(p => p.sessionId === this.props.yourId), true);
+            this.props.room.leave();
+            this.props.room.removeAllListeners();
             this.props.history.push('/');
         }
     }

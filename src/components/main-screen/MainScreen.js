@@ -1,5 +1,5 @@
 import 'materialize-css/dist/css/materialize.min.css';
-import 'materialize-css/dist/js/materialize.min';
+import * as M from 'materialize-css/dist/js/materialize.min';
 
 import React, { Component } from 'react';
 import headerImg from '../../../public/images/salad_bowl.png';
@@ -37,20 +37,21 @@ class MainScreen extends Component {
       playerList: [],
       sessionId: null,
       gameId: this.props.gameId,
+      disconnected: false
     };
   }
 
   componentDidMount() {    
     let serverAddr = null;
-
-    // if('development' === process.env.NODE_ENV) {
-      // const host = window.document.location.host.replace(/:.*/, '');
-      // serverAddr = location.protocol.replace("http", "ws") + "//" + host + (location.port ? ':'+5000 : '');
-    // } else {
+    if('true' === process.env.REACT_APP_IS_DEV_ENV) {
+      const host = window.document.location.host.replace(/:.*/, '');
+      serverAddr = location.protocol.replace("http", "ws") + "//" + host + (location.port ? ':'+5000 : '');
+    } else {
       serverAddr = 'wss://mighty-sands-84244.herokuapp.com';
-    // }
+    }
     
     this.client = new Colyseus.Client(serverAddr);
+    this.setState({client: this.client});
 
     if(this.props.gameId) {
       let session = localStorage.getItem(`session_${this.props.gameId}`);
@@ -78,11 +79,12 @@ class MainScreen extends Component {
 
   setupGame(room) {
     this.room = room;
+    this.alert = null;
 
     const gameUrl = `/game/${room.id}`;
     const roomUrl = `${window.document.location.host}${gameUrl}`;
     
-    this.setState({sessionId: room.sessionId, roomUrl});
+    this.setState({sessionId: room.sessionId, roomUrl, disconnected: false, lastPing: null});
 
     localStorage.setItem(`session_${room.id}`, room.sessionId);
 
@@ -129,6 +131,38 @@ class MainScreen extends Component {
 
       this.setState({playerList});
     };
+
+    room.onLeave(code => {
+      // console.log('qwdqwd')
+      window.M.toast({html: 'Disconnected'});
+
+      // console.log(code);
+      this.setState({disconnected: true});
+    });
+
+    room.onError(msg => {
+      console.log('Err', msg)
+    });
+
+    room.onMessage(msg => {
+      if(msg && msg.type === 'ping') {
+        // console.log('ping')
+        this.setState({lastPing: new Date()});
+      }
+    });
+
+    setInterval(() => {
+      // console.log(new Date() - this.state.lastPing)
+      if(this.state.lastPing && (new Date() - this.state.lastPing > 3000)) {
+          if(!this.alert) {
+            this.alert = window.M.toast({html: 'Disconnected'});
+          }
+          
+          // console.log(this.alert)
+      }
+
+      // this.setState({lastPing: newPing});
+    }, 1000);
   }
 
   initializeRoom(room) {
