@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Select, Button, Row, Col, Icon } from "react-materialize";
 import autoBind from "react-autobind";
 import PropTypes from "prop-types";
-import RoundInput from "./RoundInput";
+import RoundEditor from "./RoundInput";
 
 // Prepopulated rounds
 const DEFAULT_ROUNDS = [
@@ -45,6 +45,10 @@ class NewGameForm extends Component {
     this.props.onSubmit(this.state);
   }
 
+  /**
+   * Removes round at the given index
+   * @param {number} idx index of round to remove
+   */
   removeRound(idx) {
     let rounds = this.state.rounds;
     rounds.splice(idx, 1);
@@ -52,6 +56,10 @@ class NewGameForm extends Component {
     this.setState({ rounds });
   }
 
+  /**
+   * Adds a new Taboo round to the game.
+   * @param {Event} e dom event that triggered this
+   */
   addRound(e) {
     e.preventDefault();
 
@@ -61,6 +69,9 @@ class NewGameForm extends Component {
     this.setState({ rounds });
   }
 
+  /**
+   * Sets state[e.target.name] to e.target.value
+   */
   propUpdated(e) {
     const target = e.target;
     this.setState({
@@ -113,13 +124,13 @@ class NewGameForm extends Component {
 
             {this.state.rounds.map((round, idx) => (
               <div key={idx}>
-                <RoundInput
+                <RoundEditor
                   name={`Round ${idx + 1}`}
                   type={round.type}
                   duration={round.duration}
                   onUpdate={this.roundUpdated.bind(null, idx)}
                   onRemove={this.removeRound.bind(null, idx)}
-                ></RoundInput>
+                ></RoundEditor>
                 {idx < this.state.rounds.length - 1 && (
                   <Col s={12}>
                     <div className="divider"></div>

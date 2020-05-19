@@ -3,7 +3,7 @@ import { Button, Row } from "react-materialize";
 import autoBind from "react-autobind/lib/autoBind";
 import PauseGameButtons from "./PauseGameButtons";
 import CurrentTurnHeader from "./CurrentTurnHeader";
-import GuessActions from "./GuessActions";
+import AnswerActions from "./GuessActions";
 
 /**
  * Compontent for handling gameplay
@@ -68,10 +68,10 @@ class SaladBowlGame extends React.Component {
           )}
 
           {currentTurn.currentWord && (
-            <GuessActions
+            <AnswerActions
               currentTurn={currentTurn}
               act={this.act}
-            ></GuessActions>
+            ></AnswerActions>
           )}
 
           {currentTurn.state === "created" && isYourTurn && (
@@ -90,7 +90,7 @@ const CountdownState = ({ currentRound, countdown, act }) => (
     <h5>{currentRound.type} Round starts in</h5>
     <h2>
       {countdown}s{" "}
-      {(currentRound.state == "countdown" ||
+      {(currentRound.state === "countdown" ||
         currentRound.state === "paused") && (
         <PauseGameButtons
           paused={currentRound.state === "paused"}

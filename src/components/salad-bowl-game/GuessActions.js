@@ -1,10 +1,22 @@
 import React from "react";
 import { Button, Row, Col } from "react-materialize";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
-class GuessActions extends React.Component {
+const FirstWordSnipped = styled.p`
+  font-size: 24px;
+`;
+
+const AnswerButton = styled(Button)`
+  margin-bottom: "8px";
+`;
+
+class AnswerActions extends React.Component {
   static propTypes = {
+    // The current turn
     currentTurn: PropTypes.object,
+
+    // Called when an answer is approved or skipped with the given action name
     act: PropTypes.func,
   };
 
@@ -17,41 +29,31 @@ class GuessActions extends React.Component {
           <div className="divider"></div>
 
           {currentTurn.state === "created" && (
-            <p
-              style={{
-                fontSize: "24px",
-              }}
-            >
+            <FirstWordSnipped>
               It's your turn! Your first word is:
-            </p>
+            </FirstWordSnipped>
           )}
 
           <h1>{currentTurn.currentWord}</h1>
 
           {currentTurn.state !== "created" && (
             <span>
-              <Button
-                style={{
-                  marginBottom: "8px",
-                }}
+              <AnswerButton
                 className="red"
                 large
                 waves="light"
                 onClick={(e) => act(e, "skipAnswer")}
               >
                 SKIP Word
-              </Button>
+              </AnswerButton>
               &nbsp;
-              <Button
-                style={{
-                  marginBottom: "8px",
-                }}
+              <AnswerButton
                 large
                 waves="light"
                 onClick={(e) => act(e, "approveAnswer")}
               >
                 Approve Guess
-              </Button>
+              </AnswerButton>
             </span>
           )}
         </Col>
@@ -60,4 +62,4 @@ class GuessActions extends React.Component {
   }
 }
 
-export default GuessActions;
+export default AnswerActions;

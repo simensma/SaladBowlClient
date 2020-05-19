@@ -2,11 +2,33 @@ import React from "react";
 import { Row } from "react-materialize";
 import PauseGameButtons from "./PauseGameButtons";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
+const HeaderButtons = styled.span`
+  position: absolute;
+  right: 5px;
+  top: 0;
+`;
+
+const HeaderTitle = styled.h1`
+  margin-bottom: 0;
+  margin-top: 0;
+`;
+
+const Header = styled.div`
+  position: relative;
+`;
+
+/**
+ * Component for displaying info about the current turn,
+ * and buttons for pausing/resuming the game timer
+ */
 class CurrentTurnHeader extends React.Component {
   static propTypes = {
     currentTurn: PropTypes.object,
     currentRound: PropTypes.object,
+
+    // Performs an action with the given name
     act: PropTypes.func,
   };
 
@@ -14,14 +36,8 @@ class CurrentTurnHeader extends React.Component {
     const { currentTurn, currentRound, act } = this.props;
 
     return (
-      <div style={{ position: "relative" }}>
-        <span
-          style={{
-            position: "absolute",
-            right: "5px",
-            top: "0",
-          }}
-        >
+      <Header>
+        <HeaderButtons>
           &nbsp;
           {(currentTurn.state === "playing" ||
             currentTurn.state === "paused") && (
@@ -31,19 +47,12 @@ class CurrentTurnHeader extends React.Component {
               onPause={(e) => act(e, "pause")}
             ></PauseGameButtons>
           )}
-        </span>
+        </HeaderButtons>
 
         <Row>
-          <h1
-            style={{
-              marginBottom: 0,
-              marginTop: 0,
-            }}
-          >
-            {currentRound.type}
-          </h1>
+          <HeaderTitle>{currentRound.type}</HeaderTitle>
         </Row>
-      </div>
+      </Header>
     );
   }
 }

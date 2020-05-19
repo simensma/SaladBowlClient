@@ -2,6 +2,7 @@ import React from "react";
 import autoBind from "react-autobind/lib/autoBind";
 import PropTypes from "prop-types";
 import { Select, TextInput, Row, Col } from "react-materialize";
+import styled from "styled-components";
 
 // Default round types to select from
 const ROUND_TYPES = [
@@ -13,10 +14,15 @@ const ROUND_TYPES = [
   "Other",
 ];
 
+const NumberInputCol = styled(Col)`
+  display: flex;
+  align-items: Center;
+`;
+
 /**
  * Component for editing the properties of a round
  */
-class RoundInput extends React.Component {
+class RoundEditor extends React.Component {
   static propTypes = {
     // Name of component
     name: PropTypes.string,
@@ -66,7 +72,7 @@ class RoundInput extends React.Component {
             ))}
           </Select>
         </Col>
-        <Col s={4} style={{ display: "flex", alignItems: "center" }}>
+        <NumberInputCol s={4}>
           <TextInput
             type="number"
             placeholder="duration in seconds"
@@ -79,10 +85,10 @@ class RoundInput extends React.Component {
           <a href="" onClick={(e) => this.removeRound(e)}>
             Remove
           </a>
-        </Col>
+        </NumberInputCol>
       </Row>
     );
   }
 }
 
-export default RoundInput;
+export default RoundEditor;

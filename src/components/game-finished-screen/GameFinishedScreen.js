@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Row } from "react-materialize";
 
 /**
  * Component for when the game is finished.
@@ -13,17 +14,17 @@ class GameFinishedScreen extends React.Component {
 
   render() {
     return (
-      <div>
-        <h1>Game FInished!!</h1>
+      <Row>
+        <h1>Game Finished!!</h1>
 
         {this.props.teams.map((team) => {
           return (
-            <div>
+            <Row key={team.name}>
               {team.name}: {team.score} points
-            </div>
+            </Row>
           );
         })}
-      </div>
+      </Row>
     );
   }
 }
