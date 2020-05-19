@@ -4,13 +4,11 @@ import 'materialize-css/dist/js/materialize.min';
 import React, { Component } from 'react';
 import './App.css';
 import MainScreen from './components/main-screen/MainScreen';
-import { BrowserRouter as Router, Switch, Route, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 class App extends Component {
 
   render() {
-        // console.log(useParams())
-
     return (
       <Router>
         <Switch>
