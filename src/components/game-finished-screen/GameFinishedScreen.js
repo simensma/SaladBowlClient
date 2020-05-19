@@ -1,6 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-class GameFinishedScreen extends Component {
+/**
+ * Component for when the game is finished.
+ *  - Displays a list of all teams and their associated score
+ */
+class GameFinishedScreen extends React.Component {
+
+    static propTypes = {
+        // Array of teams ({name, score})
+        teams: PropTypes.array
+    };
+
     render() {
         return (
             <div>

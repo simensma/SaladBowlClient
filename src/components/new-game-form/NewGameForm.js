@@ -1,35 +1,53 @@
 import React, { Component } from 'react';
-import { Select, TextInput, Button } from 'react-materialize';
+import { Select, Button, Row, Col, Icon } from 'react-materialize';
+import autoBind from 'react-autobind';
+import PropTypes from 'prop-types';
+import RoundInput from './RoundInput';
 
+// Prepopulated rounds
+const DEFAULT_ROUNDS = [
+    {type: 'Taboo', duration: 60},
+    {type: 'Charades', duration: 45},
+    {type: 'One Word', duration: 30}
+];
+
+// Default number of words submitted per person
+const DEFAULT_NUM_WORDS = 3;
+
+// Max number of words submitted per person
+const MAX_NUM_WORDS = 20;
+
+/**
+ * Component for showing a form to create a new game
+ */
 class NewGameForm extends Component {
+
+    static propTypes = {
+        // Called with `this.state` when form is submitted 
+        onSubmit: PropTypes.func,
+    };
+    
     constructor(props) {
         super(props);
 
         this.state = {
-            numWords: 3,
-            rounds: [
-                {type: 'Taboo', duration: 60},
-                {type: 'Charades', duration: 45},
-                {type: 'One Word', duration: 30}
-            ],
+            numWords: DEFAULT_NUM_WORDS,
+            rounds: [...DEFAULT_ROUNDS],
             saving: false,
             loading: false
         }
 
-        this.addRound = this.addRound.bind(this);
-        this.removeRound = this.removeRound.bind(this);
-        this.propUpdated = this.propUpdated.bind(this);
-        this.roundUpdated = this.roundUpdated.bind(this);
-        this.createGame = this.createGame.bind(this);
+        autoBind(this);
     }
 
-    componentDidMount() {
-    }
-
-    removeRound(e, idx) {
+    createGame(e) {
         e.preventDefault();
+
+        this.props.onSubmit(this.state);
+    }
+
+    removeRound(idx) {
         let rounds = this.state.rounds;
-        
         rounds.splice(idx, 1);
 
         this.setState({rounds});
@@ -37,8 +55,8 @@ class NewGameForm extends Component {
 
     addRound(e) {
         e.preventDefault();
-        let rounds = this.state.rounds;
 
+        let rounds = this.state.rounds;
         rounds.push({type: 'Taboo', duration: 60});
 
         this.setState({rounds});
@@ -51,91 +69,71 @@ class NewGameForm extends Component {
         });    
     }
 
-    roundUpdated(e, idx, prop, val) {
+    roundUpdated(idx, prop, val) {
         let rounds = this.state.rounds;
+        rounds[idx][prop] = val;
 
-        rounds[idx][prop] = val || e.target.value;
-
-        this.setState({rounds: rounds});
-    }
-
-    createGame(e) {
-        e.preventDefault();
-
-        this.props.onSubmit(this.state);
+        this.setState({rounds});
     }
 
     render() {
-        const elems = [ ...Array(20).keys() ];
-        const roundTypes = [
-            'Taboo',
-            'Charades',
-            'One Word',
-            'Blanket',
-            'Puppet',
-            'Other'
-        ];
-
+        const numWordsSelection = [ ...Array(MAX_NUM_WORDS).keys() ];
+        
         return (
-            <div className="row">
+            <Row>
                 <form className="col s12 m8 offset-m2 l6 offset-l3" onSubmit={this.createGame}>
-                    <div className="row">
+                    <Row>
                         <h5>New Game</h5>
-                    </div>
-                    <div className="row">
-                        <div className="col s12 m6 offset-m3">
-                            <Select label="Number of words per person" name="numWords" defaultValue={this.state.numWords} onChange={this.propUpdated}>
+                    </Row>
+                    <Row>
+                        <Col s={12} m={6} offset="m3">
+                            <Select
+                                    label="Number of words per person"
+                                    name="numWords"
+                                    defaultValue={this.state.numWords}
+                                    onChange={this.propUpdated}>
                                 <option value="" disabled>Choose your option</option>
-                                {elems.map((value, idx) => {
-                                    return <option key={idx} value={value}>{value}</option>
-                                })}
+                                {numWordsSelection.map((value, idx) => <option key={idx} value={value}>{value}</option>)}
                             </Select>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col s12">
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col s={12}>
                             <h6>Rounds</h6>
-                        </div>
+                        </Col>
 
-                        {this.state.rounds.map((round, idx) => {
-                            return (
-                                <div className="row" key={idx}>
-                                    <div className="col s2" style={{"marginTop": "32px"}}><b>{idx + 1}</b></div>
-                                    <div className="col s6">
-                                        <Select s={12} onChange={e => this.roundUpdated(e, idx, 'type')} defaultValue={round.type}>
-                                            {roundTypes.map((type, i) => {
-                                                return <option key={i} value={type}>{type}</option>
-                                            })}
-                                        </Select>
-                                    </div>
-                                    <div className="col s4" style={{display: 'flex', "alignItems": 'center'}}>
-                                        <TextInput type="number" placeholder="duration in seconds" onChange={e => this.roundUpdated(e, idx, 'duration', parseInt(e.target.value, 10))} value={`${round.duration}`}></TextInput>s&nbsp;
-                                        <a href="" onClick={e => this.removeRound(e, idx)}>Remove</a>
-                                    </div>
-                                    {idx < this.state.rounds.length - 1 && <div className="col s12">
-                                        <div className="divider"></div>
-                                    </div>}
-                                </div>
-                            );
-                        })}
-                    </div>
-                    <div className="row">
-                        <div className="col s12" style={{textAlign: 'right'}}>
-                            <button className="btn-small waves-effect waves-light" onClick={this.addRound}>Add Round
-                                <i className="material-icons right">add</i>
-                            </button>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col s12 divider"></div>
-                    </div>
-                    <div className="row">
-                        <Button disabled={this.state.loading} className="btn-large waves-effect waves-light" type="submit">Start Game
-                            <i className="material-icons right">send</i>
+                        {this.state.rounds.map((round, idx) => (
+                            <div key={idx}>
+                                <RoundInput
+                                    name={`Round ${idx+1}`}
+                                    type={round.type}
+                                    duration={round.duration}
+                                    onUpdate={this.roundUpdated.bind(null, idx)}
+                                    onRemove={this.removeRound.bind(null, idx)}>
+                                </RoundInput>
+                                {idx < this.state.rounds.length - 1 && (<Col s={12}>
+                                    <div className="divider"></div>
+                                </Col>)}
+                            </div>
+                        ))}
+                    </Row>
+                    <Row>
+                        <Col s={12} style={{textAlign: 'right'}}>
+                            <Button className="btn-small waves-effect waves-light" onClick={this.addRound}>
+                                Add Round <Icon right>add</Icon>
+                            </Button>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col s={12} className="divider"></Col>
+                    </Row>
+                    <Row>
+                        <Button disabled={this.state.loading} className="btn-large waves-effect waves-light" type="submit">
+                            Start Game <Icon right>send</Icon>
                         </Button>
-                    </div>
+                    </Row>
                 </form>
-            </div>
+            </Row>
         );
     }
 }
