@@ -40,7 +40,9 @@ class SaladBowlGame extends React.Component {
 
       return (
         <form style={{ position: 'relative' }}>
-          <CurrentTurnHeader currentRound={currentRound} currentTurn={currentTurn} act={this.act}></CurrentTurnHeader>
+          <CurrentTurnHeader
+            currentRound={currentRound}
+            currentTurn={currentTurn} act={this.act}></CurrentTurnHeader>
 
           {currentTurn.state !== 'created' && (
             <CurrentTurnCountdown
