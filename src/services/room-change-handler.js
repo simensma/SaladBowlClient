@@ -9,7 +9,7 @@ export function handleRoomChanges(room, onChange) {
    * 2. Perform modifications
    * 3. Transform players into a more usable list form
    * 4. Update state
-   * @param {func} modify Functikon called when modifying playerlist
+   * @param {func} modify Function called when modifying playerlist
    */
   const handlePlayerListChange = (modify) => (player, sessionId) => {
     const players = { ...this.state.players };

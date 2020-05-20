@@ -6,6 +6,10 @@ import "./App.css";
 import MainScreen from "./components/main-screen/MainScreen";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
+/**
+ * Root component of the app.
+ * Defines the apps routes, and renders <MainScreen>
+ */
 class App extends Component {
   render() {
     return (

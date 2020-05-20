@@ -1,10 +1,10 @@
-import "materialize-css/dist/css/materialize.min.css";
-
 import React, { Component } from "react";
 import headerImg from "../../../public/images/salad_bowl.png";
-import "../../App.css";
 
+// TODO: This should be replaced with the npm version of colyseus.js,
+// however it currently breaks when imported, and needs to be investigated further.
 import * as Colyseus from "../../public/colyseus";
+
 import RegisterForm from "components/register-form/RegisterForm";
 import { Row, Col } from "react-materialize";
 import NewGameForm from "components/new-game-form/NewGameForm";
