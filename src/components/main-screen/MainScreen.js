@@ -1,5 +1,4 @@
 import "materialize-css/dist/css/materialize.min.css";
-import * as M from "materialize-css/dist/js/materialize.min";
 
 import React, { Component } from "react";
 import headerImg from "../../../public/images/salad_bowl.png";
@@ -15,7 +14,23 @@ import GameFinishedScreen from "components/game-finished-screen/GameFinishedScre
 import PlayerList from "components/player-list/PlayerList";
 
 import autoBind from "react-autobind";
+import { getServerAddress, roomUrl } from "services/url-service";
+import styled from "styled-components";
+import { handleRoomChanges } from "./handleRoomChanges";
 
+const PlayersColumn = styled(Col)`
+  border-left: "1px solid #efefef",
+  height: "100%",
+  box-shadow: "-2px 0px 12px -7px rgba(0,0,0,0.51)",
+`;
+
+/**
+ * Component that renders the main screen of the app
+ * It is responsible for
+ * - Determining what view to render based on the current state
+ * - Connect to colyseus and listen for state changes
+ * -
+ */
 class MainScreen extends Component {
   constructor(props) {
     super(props);
@@ -37,21 +52,7 @@ class MainScreen extends Component {
   }
 
   componentDidMount() {
-    this.connectToColyseus(this.serverAddr());
-  }
-
-  serverAddr() {
-    if ("true" === process.env.REACT_APP_IS_DEV_ENV) {
-      const host = window.document.location.host.replace(/:.*/, "");
-      return (
-        location.protocol.replace("http", "ws") +
-        "//" +
-        host +
-        (location.port ? ":" + 5000 : "")
-      );
-    } else {
-      return "wss://mighty-sands-84244.herokuapp.com";
-    }
+    this.connectToColyseus(getServerAddress());
   }
 
   connectToColyseus(serverAddr) {
@@ -74,6 +75,11 @@ class MainScreen extends Component {
     });
   }
 
+  /**
+   * Join the given room. Try to join `room` if specified, otherwise create a new room of type "game_room"
+   * @param {string} name Name of the room to join
+   * @param {string?} room Id of the room to join (optional).
+   */
   joinRoom(name, room) {
     let method = room
       ? this.client.joinById(room, { name, room })
@@ -88,75 +94,23 @@ class MainScreen extends Component {
     this.room = room;
     this.alert = null;
 
-    const gameUrl = `/game/${room.id}`;
-    const roomUrl = `${window.document.location.host}${gameUrl}`;
-
     this.setState({
       sessionId: room.sessionId,
-      roomUrl,
+      roomUrl: roomUrl(room),
       disconnected: false,
       lastPing: null,
     });
 
     localStorage.setItem(`session_${room.id}`, room.sessionId);
 
-    room.onStateChange.once((state) => {
-      this.setState({ state: state.state, messages: state.messages });
-    });
+    this.setupRoomHandlers(room);
+    this.showAlertIfDisconnected();
+  }
 
-    room.state.players.onAdd = (player, sessionId) => {
-      let players = this.state.players;
-      players[sessionId] = player;
-      let playerList = this.generatePlayerList(players);
-
-      this.setState({ players, playerList });
-    };
-
-    room.state.players.onRemove = (player, sessionId) => {
-      let players = this.state.players;
-      delete players[sessionId];
-      let playerList = this.generatePlayerList(players);
-
-      this.setState({ players, playerList });
-    };
-
-    room.state.players.onChange = (player, sessionId) => {
-      let players = this.state.players;
-      players[sessionId] = player;
-
-      let playerList = this.generatePlayerList(players);
-
-      this.setState({ players, playerList });
-    };
-
-    room.state.onChange = (st) => {
-      let updatedState = st.reduce((res, { field, value }) => {
-        res[field] = value;
-        return res;
-      }, {});
-
-      this.setState(updatedState);
-
-      let playerList = this.generatePlayerList(this.state.players);
-
-      this.setState({ playerList });
-    };
-
-    room.onLeave((code) => {
-      window.M.toast({ html: "Disconnected" });
-      this.setState({ disconnected: true });
-    });
-
-    room.onError((msg) => {
-      console.log("Err", msg);
-    });
-
-    room.onMessage((msg) => {
-      if (msg && msg.type === "ping") {
-        this.setState({ lastPing: new Date() });
-      }
-    });
-
+  /**
+   * Show disconnected toast if you haven't received a ping in the last 3s
+   */
+  showAlertIfDisconnected() {
     setInterval(() => {
       if (this.state.lastPing && new Date() - this.state.lastPing > 3000) {
         if (!this.alert) {
@@ -164,6 +118,20 @@ class MainScreen extends Component {
         }
       }
     }, 1000);
+  }
+
+  /**
+   * Update the current state when the state of the room changes.
+   * - TODO: The backend state model matches fairly well with what is used in this app, so I'm not picky about what's being set here.
+   * This should probably for easier visibility and to make sure we keep the state to only what we need be done through a model layer or something similar.
+   * Colyseus.io only emits events with what has changed and its new values when sending update events, so re-rendering of component trees
+   * should be kept minimal.
+   * @param {object} room the room to listen for changes to
+   */
+  setupRoomHandlers(room) {
+    handleRoomChanges(room, (updatedState) =>
+      this.setState({ ...updatedState })
+    );
   }
 
   initializeRoom(room) {
@@ -176,14 +144,6 @@ class MainScreen extends Component {
 
   startGame(words) {
     return this.room.send({ type: "startGame", data: words });
-  }
-
-  resume() {
-    return this.room.send({ type: "resume" });
-  }
-
-  pause() {
-    return this.room.send({ type: "resume" });
   }
 
   generatePlayerList(playersObj) {
@@ -235,15 +195,7 @@ class MainScreen extends Component {
 
   playerList() {
     return (
-      <Col
-        s={12}
-        m={4}
-        style={{
-          borderLeft: "1px solid #efefef",
-          height: "100%",
-          boxShadow: "-2px 0px 12px -7px rgba(0,0,0,0.51)",
-        }}
-      >
+      <PlayersColumn s={12} m={4}>
         <PlayerList
           history={this.props.history}
           room={this.room}
@@ -255,7 +207,7 @@ class MainScreen extends Component {
           players={this.state.playerList}
           round={this.state.rounds[this.state.currentRound]}
         ></PlayerList>
-      </Col>
+      </PlayersColumn>
     );
   }
 

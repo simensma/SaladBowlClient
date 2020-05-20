@@ -18,10 +18,6 @@ const RedIcon = styled.span`
  * - Ability to remove the player if disconnected
  */
 export class Player extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <Row>

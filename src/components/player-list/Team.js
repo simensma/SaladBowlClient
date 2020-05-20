@@ -11,10 +11,6 @@ import { Player } from "./Player";
  * NOTE: Must be used within a `Droppable` component
  */
 class Team extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <Row>
