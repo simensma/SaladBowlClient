@@ -129,8 +129,10 @@ class MainScreen extends Component {
    * @param {object} room the room to listen for changes to
    */
   setupRoomHandlers(room) {
-    handleRoomChanges(room, (updatedState) =>
-      this.setState({ ...updatedState })
+    handleRoomChanges(
+      room,
+      (updatedState) => this.setState({ ...updatedState }),
+      () => this.state.players
     );
   }
 
@@ -144,16 +146,6 @@ class MainScreen extends Component {
 
   startGame(words) {
     return this.room.send({ type: "startGame", data: words });
-  }
-
-  generatePlayerList(playersObj) {
-    let players = [];
-
-    for (let id in playersObj) {
-      players.push(playersObj[id]);
-    }
-
-    return players;
   }
 
   gameContent() {

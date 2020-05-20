@@ -2,8 +2,9 @@
  * Set up listeners for colyseus.io room events
  * @param {Room} room room to listen to events for
  * @param {func} onChange called whenever the room state has been updated
+ * @param {func} playerProvider function that returns a list of the current players
  */
-export function handleRoomChanges(room, onChange) {
+export function handleRoomChanges(room, onChange, playerProvider) {
   /**
    * 1. Look up players on state
    * 2. Perform modifications
@@ -12,9 +13,9 @@ export function handleRoomChanges(room, onChange) {
    * @param {func} modify Function called when modifying playerlist
    */
   const handlePlayerListChange = (modify) => (player, sessionId) => {
-    const players = { ...this.state.players };
+    const players = { ...playerProvider() };
     modify(players, player, sessionId);
-    const playerList = this.generatePlayerList(players);
+    const playerList = generatePlayerList(players);
     onChange({ players, playerList });
   };
 
@@ -48,7 +49,7 @@ export function handleRoomChanges(room, onChange) {
       return res;
     }, {});
     onChange(updatedState);
-    let playerList = this.generatePlayerList(this.state.players);
+    let playerList = generatePlayerList(playerProvider());
     onChange({ playerList });
   };
 
@@ -67,4 +68,14 @@ export function handleRoomChanges(room, onChange) {
       onChange({ lastPing: new Date() });
     }
   });
+}
+
+function generatePlayerList(playersObj) {
+  let players = [];
+
+  for (let id in playersObj) {
+    players.push(playersObj[id]);
+  }
+
+  return players;
 }
