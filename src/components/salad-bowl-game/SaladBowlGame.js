@@ -3,7 +3,7 @@ import { Button, Row } from "react-materialize";
 import autoBind from "react-autobind/lib/autoBind";
 import PauseGameButtons from "./PauseGameButtons";
 import CurrentTurnHeader from "./CurrentTurnHeader";
-import AnswerActions from "./GuessActions";
+import AnswerActions from "./AnswerActions";
 
 /**
  * Compontent for handling gameplay

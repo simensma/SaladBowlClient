@@ -1,10 +1,10 @@
-import "materialize-css/dist/css/materialize.min.css";
-
 import React, { Component } from "react";
 import headerImg from "../../../public/images/salad_bowl.png";
-import "../../App.css";
 
+// TODO: This should be replaced with the npm version of colyseus.js,
+// however it currently breaks when imported, and needs to be investigated further.
 import * as Colyseus from "../../public/colyseus";
+
 import RegisterForm from "components/register-form/RegisterForm";
 import { Row, Col } from "react-materialize";
 import NewGameForm from "components/new-game-form/NewGameForm";
@@ -16,7 +16,7 @@ import PlayerList from "components/player-list/PlayerList";
 import autoBind from "react-autobind";
 import { getServerAddress, roomUrl } from "services/url-service";
 import styled from "styled-components";
-import { handleRoomChanges } from "./handleRoomChanges";
+import { handleRoomChanges } from "services/room-change-handler";
 
 const PlayersColumn = styled(Col)`
   border-left: "1px solid #efefef",
